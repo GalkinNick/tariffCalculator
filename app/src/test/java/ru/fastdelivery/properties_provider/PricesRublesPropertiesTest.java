@@ -6,6 +6,7 @@ import ru.fastdelivery.domain.common.currency.Currency;
 import ru.fastdelivery.domain.common.currency.CurrencyFactory;
 import ru.fastdelivery.properties.provider.PricesRublesProperties;
 
+import javax.crypto.Mac;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,6 +18,7 @@ class PricesRublesPropertiesTest {
 
     public static final BigDecimal PER_KG = BigDecimal.valueOf(50);
     public static final BigDecimal MINIMAL = BigDecimal.valueOf(100);
+    public static final BigDecimal MAX = BigDecimal.valueOf(150);
     public static final String RUB = "RUB";
     final CurrencyFactory currencyFactory = mock(CurrencyFactory.class);
     PricesRublesProperties properties;
@@ -28,6 +30,7 @@ class PricesRublesPropertiesTest {
 
         properties.setPerKg(PER_KG);
         properties.setMinimal(MINIMAL);
+        properties.setMax(MAX);
 
         var currency = mock(Currency.class);
         when(currency.getCode()).thenReturn(RUB);
@@ -50,6 +53,7 @@ class PricesRublesPropertiesTest {
 
         verify(currencyFactory).create("RUB");
         assertThat(actual.amount()).isEqualByComparingTo(MINIMAL);
+        assertThat(actual.amount()).isEqualByComparingTo(MAX);
         assertThat(actual.currency().getCode()).isEqualTo("RUB");
     }
 }

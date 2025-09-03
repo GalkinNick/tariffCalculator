@@ -1,6 +1,7 @@
 package ru.fastdelivery.domain.delivery.shipment;
 
 import ru.fastdelivery.domain.common.currency.Currency;
+import ru.fastdelivery.domain.common.dimensions.Dimensions;
 import ru.fastdelivery.domain.common.weight.Weight;
 import ru.fastdelivery.domain.delivery.pack.Pack;
 
@@ -18,5 +19,11 @@ public record Shipment(
         return packages.stream()
                 .map(Pack::weight)
                 .reduce(Weight.zero(), Weight::add);
+    }
+
+    public Dimensions dimensionsAllPackages() {
+        return packages.stream()
+                .map(Pack::dimensions)
+                .reduce(Dimensions.zero(), Dimensions::add);
     }
 }
