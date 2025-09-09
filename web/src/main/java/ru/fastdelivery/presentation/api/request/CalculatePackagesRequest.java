@@ -16,6 +16,16 @@ public record CalculatePackagesRequest(
 
         @Schema(description = "Трехбуквенный код валюты", example = "RUB")
         @NotNull
-        String currencyCode
+        String currencyCode,
+
+        @Schema(description = "Координаты места назначения",
+                example = "[{\"latitude\" : 73.398660}]")
+        @NotNull
+        Location destination,
+
+        @Schema(description = "Координаты места отправления",
+                example = "[{\"longitude\" : 65.339151}]")
+        @NotNull
+        Location departure
 ) {
 }

@@ -18,6 +18,7 @@ import ru.fastdelivery.domain.delivery.shipment.Shipment;
 import ru.fastdelivery.presentation.api.request.CalculatePackagesRequest;
 import ru.fastdelivery.presentation.api.request.CargoPackage;
 import ru.fastdelivery.presentation.api.response.CalculatePackagesResponse;
+import ru.fastdelivery.usecase.DeliveryCostCalculator;
 import ru.fastdelivery.usecase.TariffCalculateUseCase;
 
 @RestController
@@ -26,6 +27,7 @@ import ru.fastdelivery.usecase.TariffCalculateUseCase;
 @Tag(name = "Расчеты стоимости доставки")
 public class CalculateController {
     private final TariffCalculateUseCase tariffCalculateUseCase;
+    private final DeliveryCostCalculator deliveryCostCalculator;
     private final CurrencyFactory currencyFactory;
 
     @PostMapping
@@ -46,11 +48,23 @@ public class CalculateController {
                 .map(p -> new Pack(new Weight(p.weight()), new Dimensions(p.length(), p.width(), p.height())))
                 .toList();
 
+        double distance = deliveryCostCalculator.calculateDistance(request.destination().latitude(),
+                request.destination().longitude(),
+                request.departure().latitude(),
+                request.departure().longitude());
+
+
 
         var shipment = new Shipment(packs, currencyFactory.create(request.currencyCode()));
         var calculatedPrice = tariffCalculateUseCase.calc(shipment);
         var minimalPrice = tariffCalculateUseCase.minimalPrice();
         var maxPrice = tariffCalculateUseCase.maxPrice();
+
+        deliveryCostCalculator.calculateTotalDeliveryCost(distance,
+                shipment.weightAllPackages(),
+                shipment.dimensionsAllPackages());
+
+
         return new CalculatePackagesResponse(calculatedPrice, maxPrice);
     }
 }

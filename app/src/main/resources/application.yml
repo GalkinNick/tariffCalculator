@@ -5,3 +5,10 @@ cost:
   rub:
     perKg: 400
     minimal: 350
+location:
+  latitude:
+    min: 45.0
+    max: 65.0
+  longitude:
+    min: 30.0
+    max: 96.0
