@@ -17,7 +17,7 @@ public record Dimensions(
     private static final BigInteger SCALE_FACTOR = BigInteger.TEN.pow(SCALE);
 
     private static boolean isLassThenZero(BigInteger price){return BigInteger.ZERO.compareTo(price) > 0;}
-    private static boolean isMoreThenMaxDimension(BigInteger price) {return MAX_LENGTH_DIMENSION.compareTo(price) > 0;}
+    private static boolean isMoreThenMaxDimension(BigInteger price) {return MAX_LENGTH_DIMENSION.compareTo(price) < 0;}
 
     public Dimensions{
         if (isLassThenZero(length) || isLassThenZero(width) || isLassThenZero(height)){

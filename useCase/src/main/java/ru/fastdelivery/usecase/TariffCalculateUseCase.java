@@ -10,7 +10,6 @@ import javax.inject.Named;
 @RequiredArgsConstructor
 public class TariffCalculateUseCase {
     private final WeightPriceProvider weightPriceProvider;
-    private final DeliveryCostCalculator deliveryCostCalculator;
 
     public Price calc(Shipment shipment) {
         var weightAllPackagesKg = shipment.weightAllPackages().kilograms();

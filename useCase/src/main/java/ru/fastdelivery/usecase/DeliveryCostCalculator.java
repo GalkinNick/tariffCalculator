@@ -1,15 +1,18 @@
 package ru.fastdelivery.usecase;
 
-import ru.fastdelivery.domain.common.dimensions.Dimensions;
-import ru.fastdelivery.domain.common.weight.Weight;
+import lombok.RequiredArgsConstructor;
+import ru.fastdelivery.domain.common.price.Price;
 
+import javax.inject.Named;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+@Named
+@RequiredArgsConstructor
 public class DeliveryCostCalculator {
 
     private final double EARTH_RADIUS_KM = 6371.0;
-    private final double DISTANCE = 450.0;
+    private final double MIN_DISTANCE = 450.0;
 
     public double calculateDistance(double lat1, double lon1,
                                     double lat2, double lon2){
@@ -36,19 +39,15 @@ public class DeliveryCostCalculator {
         return EARTH_RADIUS_KM * centralAngle;
     }
 
-    public BigDecimal calculateTotalDeliveryCost(double distance, Weight weight, Dimensions dimensions) {
+    public BigDecimal calculateTotalDeliveryCost(double distance, Price price) {
 
+        double distanceSegments = Math.ceil(distance / MIN_DISTANCE);
 
+        BigDecimal distanceSurcharge = price.amount().multiply(BigDecimal.valueOf(distanceSegments));
 
-      /*  double distanceSegments = Math.ceil(distance / DISTANCE);
+        BigDecimal totalCost = price.amount().add(distanceSurcharge);
 
-        //BigDecimal surchargePerSegment = calculateBaseCost(weightInKilograms, volumeInCubicMeters);
-        BigDecimal distanceSurcharge = surchargePerSegment.multiply(BigDecimal.valueOf(distanceSegments));
-
-        BigDecimal totalCost = baseCost.add(distanceSurcharge);
-
-        return totalCost.setScale(2, RoundingMode.CEILING);*/
-        return null;
+        return totalCost.setScale(2, RoundingMode.CEILING);
     }
 
 }

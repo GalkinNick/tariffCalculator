@@ -38,11 +38,6 @@ public class CalculateController {
     })
     public CalculatePackagesResponse calculate(
             @Valid @RequestBody CalculatePackagesRequest request) {
-        /*var packsWeights = request.packages().stream()
-                .map(CargoPackage::weight)
-                .map(Weight::new)
-                .map(Pack::new)
-                .toList();*/
 
         var packs = request.packages().stream()
                 .map(p -> new Pack(new Weight(p.weight()), new Dimensions(p.length(), p.width(), p.height())))
@@ -58,14 +53,11 @@ public class CalculateController {
         var shipment = new Shipment(packs, currencyFactory.create(request.currencyCode()));
         var calculatedPrice = tariffCalculateUseCase.calc(shipment);
         var minimalPrice = tariffCalculateUseCase.minimalPrice();
-        var maxPrice = tariffCalculateUseCase.maxPrice();
+        //var maxPrice = tariffCalculateUseCase.maxPrice();
 
-        deliveryCostCalculator.calculateTotalDeliveryCost(distance,
-                shipment.weightAllPackages(),
-                shipment.dimensionsAllPackages());
+        calculatedPrice.updateAmount(deliveryCostCalculator.calculateTotalDeliveryCost(distance, calculatedPrice));
 
-
-        return new CalculatePackagesResponse(calculatedPrice, maxPrice);
+        return new CalculatePackagesResponse(calculatedPrice, minimalPrice);
     }
 }
 

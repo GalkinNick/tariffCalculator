@@ -21,6 +21,10 @@ public record Price(
         return BigDecimal.ZERO.compareTo(price) > 0;
     }
 
+    public void updateAmount(BigDecimal newAmount){
+        amount.add(newAmount);
+    }
+
     public Price multiply(BigDecimal amount) {
         return new Price(this.amount.multiply(amount), this.currency);
     }
